@@ -3,8 +3,6 @@ name: Node.js application
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -12,7 +10,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -26,17 +23,14 @@ jobs:
     - name: Ejecutar pruebas
       run: node app_test.js
 
-    - name: Ejecutar la app
-      run: node app.js
-
     - name: Simular el deploy
       run: echo "Simular que se esta desplegando"
 
     - name: Construir la imagen de docker
-      run: docker build -t ghcr.io/lorecami/hello-camila-node:1.0.0 .
+      run: docker build -t ghcr.io/${{ github.repository_owner }}/hello-camila-node:1.0.0 .
 
     - name: Login en Github container registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Publicar la imagen
-      run: docker push ghcr.io/lorecami/hello-camila-node:1.0.0
+      run: docker push ghcr.io/${{ github.repository_owner }}/hello-camila-node:1.0.0
